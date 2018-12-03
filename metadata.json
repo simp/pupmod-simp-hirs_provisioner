@@ -12,10 +12,6 @@
   ],
   "dependencies": [
     {
-      "name": "simp/iptables",
-      "version_requirement": ">= 6.1.5 < 7.0.0"
-    },
-    {
       "name": "simp/simplib",
       "version_requirement": ">= 3.11.0 < 4.0.0"
     },

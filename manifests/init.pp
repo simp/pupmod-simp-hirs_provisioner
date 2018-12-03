@@ -19,81 +19,64 @@
 #   default, and must be explicitly opted into by administrators.  Please
 #   review the +trusted_nets+ and +$enable_*+ parameters for details.
 #
-# @param service_name
-#   The name of the hirs_provisioner service
+# @param enable_hirs
+#   This module will install and mangage HIRS unless `false`
 #
-# @param package_name
-#   The name of the hirs_provisioner package
+# @param package_ensure 
+#   The dedefault ensure parameter for packages.
 #
-# @param trusted_nets
-#   A whitelist of subnets (in CIDR notation) permitted access
+# @param tpm12_packages
+#   A hash of packages needed for HIRS with TPM 1.2.  The hash format is:
 #
-# @param enable_auditing
-#   If true, manage auditing for hirs_provisioner
+#        ```yaml
+#        <package_name>':
+#           ensure: <ensure_value>
+#        ```     
 #
-# @param enable_firewall
-#   If true, manage firewall rules to acommodate hirs_provisioner
+# @param tpm20_packages
+#   A hash of packages needed for HIRS with TPM 2.0.  The hash format is:
 #
-# @param enable_logging
-#   If true, manage logging configuration for hirs_provisioner
+#        ```yaml
+#        <package_name>':
+#           ensure: <ensure_value>
+#        ```     
 #
-# @param enable_pki
-#   If true, manage PKI/PKE configuration for hirs_provisioner
-#
-# @param enable_tcpwrappers
-#   If true, manage TCP wrappers configuration for hirs_provisioner
-#
-# @author SIMP Team
+# @author SIMP Team <https://simp-project.com/>
 #
 class hirs_provisioner (
-  String                        $service_name       = 'hirs_provisioner',
-  String                        $package_name       = 'hirs_provisioner',
-  Simplib::Port                 $tcp_listen_port    = 9999,
-  Simplib::Netlist              $trusted_nets       = simplib::lookup('simp_options::trusted_nets', {'default_value' => ['127.0.0.1/32'] }),
-  Variant[Boolean,Enum['simp']] $enable_pki         = simplib::lookup('simp_options::pki', { 'default_value'         => false }),
-  Boolean                       $enable_auditing    = simplib::lookup('simp_options::auditd', { 'default_value'      => false }),
-  Variant[Boolean,Enum['simp']] $enable_firewall    = simplib::lookup('simp_options::firewall', { 'default_value'    => false }),
-  Boolean                       $enable_logging     = simplib::lookup('simp_options::syslog', { 'default_value'      => false }),
-  Boolean                       $enable_tcpwrappers = simplib::lookup('simp_options::tcpwrappers', { 'default_value' => false })
+  Boolean                          $enable_hirs        = true,
+  String                           $package_ensure     = simplib::lookup('simp_options::package_ensure', {'default_value' => 'installed'}),
+  Hash[String,Hash[String,String]] $tpm12_packages     = simplib::lookup('hirs_provisioner::tpm12_packages'),
+  Hash[String,Hash[String,String]] $tpm20_packages     = simplib::lookup('hirs_provisioner::tpm20_packages'),
 ) {
 
   simplib::assert_metadata($module_name)
 
-  include '::hirs_provisioner::install'
-  include '::hirs_provisioner::config'
-  include '::hirs_provisioner::service'
-
-  Class[ '::hirs_provisioner::install' ]
-  -> Class[ '::hirs_provisioner::config' ]
-  ~> Class[ '::hirs_provisioner::service' ]
-
-  if $enable_pki {
-    include '::hirs_provisioner::config::pki'
-    Class[ '::hirs_provisioner::config::pki' ]
-    -> Class[ '::hirs_provisioner::service' ]
+  if defined('$facts["tpm_version"]') and $facts['tpm_version' == 'tpm1'] {
+    tpm_version = "12"
+  } elsif defined('$facts["tpm2"]) {
+    tpm_version = "20"
+  } else {
+    notify { "NOTICE: No enabled TPM device detected in host": }
   }
 
-  if $enable_auditing {
-    include '::hirs_provisioner::config::auditing'
-    Class[ '::hirs_provisioner::config::auditing' ]
-    -> Class[ '::hirs_provisioner::service' ]
-  }
+  if $enable_hirs {
+    if !defined($tpm_version) {
+      notify { "NOTICE: No TPM; skipping installation": }
+    } else {
+      $$::hirs_provisioner::packages = $$::hirs_provision::tpm${tpm_version}_packages
+      include '::hirs_provisioner::install'
+      include '::hirs_provisioner::config'
 
-  if $enable_firewall {
-    include '::hirs_provisioner::config::firewall'
-    Class[ '::hirs_provisioner::config::firewall' ]
-    -> Class[ '::hirs_provisioner::service' ]
-  }
+      Class[ '::hirs_provisioner::install' ]
+      -> Class[ '::hirs_provisioner::config' ]
 
-  if $enable_logging {
-    include '::hirs_provisioner::config::logging'
-    Class[ '::hirs_provisioner::config::logging' ]
-    -> Class[ '::hirs_provisioner::service' ]
-  }
-
-  if $enable_tcpwrappers {
-    include '::hirs_provisioner::config::tcpwrappers'
-    Class[ '::hirs_provisioner::config::tcpwrappers' ]
-    -> Class[ '::hirs_provisioner::service' ]
+      exec {
+        # provision hirs client
+        'hirs-provision-client':
+          command     => '/usr/sbin/hirs-provisioner -p',
+          refreshonly => true;
+      }
+    }
   }
 }
