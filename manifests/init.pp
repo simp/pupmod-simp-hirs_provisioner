@@ -44,39 +44,33 @@
 # @author SIMP Team <https://simp-project.com/>
 #
 class hirs_provisioner (
-  Boolean                          $enable_hirs        = true,
-  String                           $package_ensure     = simplib::lookup('simp_options::package_ensure', {'default_value' => 'installed'}),
-  Hash[String,Hash[String,String]] $tpm12_packages     = simplib::lookup('hirs_provisioner::tpm12_packages'),
-  Hash[String,Hash[String,String]] $tpm20_packages     = simplib::lookup('hirs_provisioner::tpm20_packages'),
+  Boolean                          $enable_hirs    = true,
+  String                           $package_ensure = simplib::lookup('simp_options::package_ensure', {'default_value' => 'installed'}),
+  Hash[String,Hash[String,String]] $tpm12_packages = simplib::lookup('hirs_provisioner::tpm12_packages'),
+  Hash[String,Hash[String,String]] $tpm2_packages  = simplib::lookup('hirs_provisioner::tpm2_packages'),
 ) {
 
   simplib::assert_metadata($module_name)
 
   if defined('$facts["tpm_version"]') and $facts['tpm_version' == 'tpm1'] {
     tpm_version = "12"
-  } elsif defined('$facts["tpm2"]) {
-    tpm_version = "20"
+    $packages = $tpm12_packages
+  } elsif ($facts["tpm2"]["tpm2_getcap"]["properties-fixed"]["TPM_PT_FAMILY_INDICATOR"]["as string"] == '2.0') {
+    tpm_version = "2"
+    $packages = $tpm2_packages
   } else {
     notify { "NOTICE: No enabled TPM device detected in host": }
   }
 
   if $enable_hirs {
-    if !defined($tpm_version) {
+    if !defined('$packages') {
       notify { "NOTICE: No TPM; skipping installation": }
     } else {
-      $$::hirs_provisioner::packages = $$::hirs_provision::tpm${tpm_version}_packages
       include '::hirs_provisioner::install'
       include '::hirs_provisioner::config'
 
       Class[ '::hirs_provisioner::install' ]
       -> Class[ '::hirs_provisioner::config' ]
-
-      exec {
-        # provision hirs client
-        'hirs-provision-client':
-          command     => '/usr/sbin/hirs-provisioner -p',
-          refreshonly => true;
-      }
     }
   }
 }

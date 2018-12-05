@@ -52,4 +52,12 @@ class hirs_provisioner::config {
 
   } ~>
 
+  exec {
+
+    # provision hirs client
+    'hirs-provision-client':
+      command     => '/usr/sbin/hirs-provisioner -p',
+      refreshonly => true;
+  }
+
 }

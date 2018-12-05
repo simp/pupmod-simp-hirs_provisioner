@@ -2,25 +2,9 @@
 # hirs_provisioner::parameter_name: 'value'
 
 hirs_provisioner::tpm12_packages:
-  java-1.8.0-openjdk:
-    ensure: package_ensure
   gcc:
     ensure: package_ensure
-  wget:
-    ensure: package_ensure
-  util-linux:
-    ensure: package_ensure
-  chkconfig:
-    ensure: package_ensure
-  sed:
-    ensure: package_ensure
   initscripts:
-    ensure: package_ensure
-  coreutils:
-    ensure: package_ensure
-  dmidecode:
-    ensure: package_ensure
-  lshw:
     ensure: package_ensure
   trousers:
     ensure: package_ensure
