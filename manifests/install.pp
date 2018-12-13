@@ -16,6 +16,16 @@ class hirs_provisioner::install {
     }
   }
 
+  file { '/var/log/hirs':
+    ensure => directory,
+    mode   => '0750'
+  }
+
+  file { '/var/log/hirs/provisioner':
+    ensure => directory,
+    mode   => '0750'
+  }
+
   if $::hirs_provisioner::tpm_version == '2' {
     file { '/usr/sbin/hirs-provisioner':
       ensure => 'link',
