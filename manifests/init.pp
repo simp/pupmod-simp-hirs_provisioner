@@ -52,11 +52,11 @@ class hirs_provisioner (
 
   simplib::assert_metadata($module_name)
 
-  if defined('$facts["tpm_version"]') and $facts['tpm_version' == 'tpm1'] {
-    tpm_version = "12"
+  if $::tpm12_enabled == 'true' {
+    $tpm_version = '12'
     $packages = $tpm12_packages
-  } elsif ($facts["tpm2"]["tpm2_getcap"]["properties-fixed"]["TPM_PT_FAMILY_INDICATOR"]["as string"] == '2.0') {
-    tpm_version = "2"
+  } elsif $::tpm2_enabled == 'true' {
+    $tpm_version = '2'
     $packages = $tpm2_packages
   } else {
     notify { "NOTICE: No enabled TPM device detected in host": }
@@ -66,6 +66,7 @@ class hirs_provisioner (
     if !defined('$packages') {
       notify { "NOTICE: No TPM; skipping installation": }
     } else {
+      $tpm_enabled = 'true'
       include '::hirs_provisioner::install'
       include '::hirs_provisioner::config'
 

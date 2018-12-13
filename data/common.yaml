@@ -28,6 +28,8 @@ hirs_provisioner::tpm2_packages:
     ensure: package_ensure
   openssl-devel:
     ensure: package_ensure
+  libcurl-devel:
+    ensure: package_ensure
   paccor:
     ensure: package_ensure
   HIRS_Provisioner_TPM_2_0:

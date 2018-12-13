@@ -2,7 +2,25 @@
 #
 # This class is called from hirs_provisioner for service config.
 #
-class hirs_provisioner::config {
+# @param aca_fqdn
+#   The fully qualified domain name of the Attestation Certificate Authority
+#   (ACA). This will also be used for the Broker and Portal FQDNs.
+#
+# @param aca_port
+#   The configured listening port for the ACA.
+#
+# @param broker_port
+#   The configured broker listening port for the ACA.
+#
+# @param portal_port
+#   The configured portal listening port for the ACA.
+#
+class hirs_provisioner::config (
+  String           $aca_fqdn    = localhost,
+  Integer[0,65535] $aca_port    = 8443,
+  Integer[0,65535] $broker_port = 61616,
+  Integer[0,65535] $portal_port = 8443
+) {
   assert_private()
 
   exec {
@@ -23,7 +41,7 @@ class hirs_provisioner::config {
     # set TPM_ENABLED
     'tpm-enabled':
       path  => '/etc/hirs/hirs-site.config',
-      line  => "TPM_ENABLED=$::tpm_enabled",
+      line  => "TPM_ENABLED=$::hirs_provisioner::tpm_enabled",
       match => "^TPM_ENABLED=.*$";
 
     # set IMA_ENABLED
@@ -38,17 +56,35 @@ class hirs_provisioner::config {
       line  => "ATTESTATION_CA_FQDN=$aca_fqdn",
       match => "^ATTESTATION_CA_FQDN=.*$";
 
+    # set ATTESTATION_CA_Port
+    'aca-port':
+      path  => '/etc/hirs/hirs-site.config',
+      line  => "ATTESTATION_CA_PORT=$aca_port",
+      match => "^ATTESTATION_CA_PORT=.*$";
+
     # set BROKER_FQDN
     'broker-fqdn':
       path  => '/etc/hirs/hirs-site.config',
-      line  => "BROKER_FQDN=$broker_fqdn",
+      line  => "BROKER_FQDN=$aca_fqdn",
       match => "^BROKER_FQDN=.*$";
+
+    # set BROKER_PORT
+    'broker-port':
+      path  => '/etc/hirs/hirs-site.config',
+      line  => "BROKER_PORT=$broker_port",
+      match => "^BROKER_PORT=.*$";
 
     # set PORTAL_FQDN
     'portal-fqdn':
       path  => '/etc/hirs/hirs-site.config',
-      line  => "PORTAL_FQDN=$portal_fqdn",
+      line  => "PORTAL_FQDN=$aca_fqdn",
       match => "^PORTAL_FQDN=.*$";
+
+    # set PORTAL_PORT
+    'portal-port':
+      path  => '/etc/hirs/hirs-site.config',
+      line  => "PORTAL_PORT=$portal_port",
+      match => "^PORTAL_PORT=.*$";
 
   } ~>
 
@@ -56,7 +92,7 @@ class hirs_provisioner::config {
 
     # provision hirs client
     'hirs-provision-client':
-      command     => '/usr/sbin/hirs-provisioner -p',
+      command     => '/usr/sbin/hirs-provisioner provision',
       refreshonly => true;
   }
 
