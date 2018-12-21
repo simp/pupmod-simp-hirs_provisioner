@@ -30,7 +30,6 @@ addons:
 
 before_install:
   - rm -f Gemfile.lock
-  - gem update --system
 
 jobs:
   include:
