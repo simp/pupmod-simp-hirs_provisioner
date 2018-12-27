@@ -16,10 +16,10 @@
 #   The configured portal listening port for the ACA.
 #
 class hirs_provisioner::config (
-  String           $aca_fqdn    = localhost,
-  Integer[0,65535] $aca_port    = 8443,
-  Integer[0,65535] $broker_port = 61616,
-  Integer[0,65535] $portal_port = 8443
+  Simplib::Hostname $aca_fqdn    = 'localhost',
+  Simplib::Port     $aca_port    = 8443,
+  Simplib::Port     $broker_port = 61616,
+  Simplib::Port     $portal_port = 8443
 ) {
   assert_private()
 
@@ -27,7 +27,7 @@ class hirs_provisioner::config (
     # generate hirs-site.config
     'hirs-provision-config':
       command => '/usr/sbin/hirs-provisioner -c',
-      onlyif  => '/usr/bin/test ! -f /etc/hirs/hirs-site.config';
+      onlyif  => '/usr/bin/test ! -f /etc/hirs/hirs-site.config'
   } ->
 
   file_line {
@@ -47,7 +47,7 @@ class hirs_provisioner::config (
     # set IMA_ENABLED
     'ima-enabled':
       path  => '/etc/hirs/hirs-site.config',
-      line  => "IMA_ENABLED=$::ima_enabled",
+      line  => "IMA_ENABLED=${bool2str($facts['ima_enabled'])}",
       match => "^IMA_ENABLED=.*$";
 
     # set ATTESTATION_CA_FQDN
@@ -84,7 +84,7 @@ class hirs_provisioner::config (
     'portal-port':
       path  => '/etc/hirs/hirs-site.config',
       line  => "PORTAL_PORT=$portal_port",
-      match => "^PORTAL_PORT=.*$";
+      match => "^PORTAL_PORT=.*$"
 
   } ~>
 

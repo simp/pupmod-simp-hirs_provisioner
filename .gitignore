@@ -10,6 +10,7 @@ sec_results
 /.rspec_system
 /.vagrant
 /.bundle
+Gemfile.lock
 /vendor
 /junit
 /log
