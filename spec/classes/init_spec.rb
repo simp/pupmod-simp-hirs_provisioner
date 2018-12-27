@@ -34,8 +34,7 @@ describe 'hirs_provisioner' do
           let(:facts) do 
             os_facts.merge({
               tpm12_enabled: true,
-              tpm2_enabled:  false,
-              ima_enabled:   false
+              tpm2_enabled:  false
             })
           end
           it_behaves_like "a structured module"
@@ -45,8 +44,7 @@ describe 'hirs_provisioner' do
           let(:facts) do 
             os_facts.merge({
               tpm12_enabled: false,
-              tpm2_enabled:  true,
-              ima_enabled:   false
+              tpm2_enabled:  true
             })
           end
           it_behaves_like "a structured module"

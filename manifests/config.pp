@@ -47,7 +47,7 @@ class hirs_provisioner::config (
     # set IMA_ENABLED
     'ima-enabled':
       path  => '/etc/hirs/hirs-site.config',
-      line  => "IMA_ENABLED=${bool2str($facts['ima_enabled'])}",
+      line  => "IMA_ENABLED=${facts['cmdline']['ima'] == 'on'}",
       match => "^IMA_ENABLED=.*$";
 
     # set ATTESTATION_CA_FQDN
