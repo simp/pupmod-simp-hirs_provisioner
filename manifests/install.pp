@@ -5,16 +5,21 @@
 class hirs_provisioner::install {
   assert_private()
 
-  $::hirs_provisioner::_packages.each | $pkg_name, $parameters | {
-    $_ensure = defined('$parameters["ensure"]') ? {
-      true    => regsubst($parameters["ensure"], '^package_ensure$', $hirs_provisioner::package_ensure ),
-      default => $hirs_provisioner::package_ensure,
-    }
-
-    package { $pkg_name:
-      ensure => $_ensure,
-    }
+  simplib::install { 'hirs_provisioner':
+    packages => $hirs_provisioner::_packages,
+    defaults => { 'ensure' => $hirs_provisioner::package_ensure }
   }
+
+#  $::hirs_provisioner::_packages.each | $pkg_name, $parameters | {
+#    $_ensure = defined('$parameters["ensure"]') ? {
+#      true    => regsubst($parameters["ensure"], '^package_ensure$', $hirs_provisioner::package_ensure ),
+#      default => $hirs_provisioner::package_ensure,
+#    }
+
+#    package { $pkg_name:
+#      ensure => $_ensure,
+#    }
+#  }
 
   file { '/var/log/hirs':
     ensure => directory,
@@ -26,7 +31,7 @@ class hirs_provisioner::install {
     mode   => '0750'
   }
 
-  if $::hirs_provisioner::tpm_version == '2' {
+  if $::hirs_provisioner::tpm_version == '2.0' {
     file { '/usr/sbin/hirs-provisioner':
       ensure => 'link',
       target => '/usr/local/bin/hirs-provisioner-tpm2'

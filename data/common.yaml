@@ -1,36 +1,26 @@
 ---
 # hirs_provisioner::parameter_name: 'value'
 
-hirs_provisioner::tpm12_packages:
-  gcc:
-    ensure: package_ensure
-  initscripts:
-    ensure: package_ensure
-  trousers:
-    ensure: package_ensure
-  tpm-tools:
-    ensure: package_ensure
-  openssl-devel:
-    ensure: package_ensure
-  libtool:
-    ensure: package_ensure
-  paccor:
-    ensure: package_ensure
-  tpm_module:
-    ensure: package_ensure
-  HIRS_Provisioner_TPM_1_2:
-    ensure: package_ensure
+# In addition to the HIRS_Provisioner and paccor packeages, all packages below
+# are specified as dependencies in the HIRS documentation but not necessarily
+# included as depencies for the HIRS_Provisioner RPM.  Will investigate
+# paring down the list.
+
+hirs_provisioner::tpm_1_2_packages:
+  gcc: ~
+  initscripts: ~
+  trousers: ~
+  tpm-tools: ~
+  openssl-devel: ~
+  libtool: ~
+  paccor: ~
+  tpm_module: ~
+  HIRS_Provisioner_TPM_1_2: ~
   
-hirs_provisioner::tpm2_packages:
-  java-1.8.0-openjdk:
-    ensure: package_ensure
-  gcc:
-    ensure: package_ensure
-  openssl-devel:
-    ensure: package_ensure
-  libcurl-devel:
-    ensure: package_ensure
-  paccor:
-    ensure: package_ensure
-  HIRS_Provisioner_TPM_2_0:
-    ensure: package_ensure
+hirs_provisioner::tpm_2_0_packages:
+  java-1.8.0-openjdk: ~
+  gcc: ~
+  openssl-devel: ~
+  libcurl-devel: ~
+  paccor: ~
+  HIRS_Provisioner_TPM_2_0: ~
