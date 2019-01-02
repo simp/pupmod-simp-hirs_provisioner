@@ -10,17 +10,6 @@ class hirs_provisioner::install {
     defaults => { 'ensure' => $hirs_provisioner::package_ensure }
   }
 
-#  $::hirs_provisioner::_packages.each | $pkg_name, $parameters | {
-#    $_ensure = defined('$parameters["ensure"]') ? {
-#      true    => regsubst($parameters["ensure"], '^package_ensure$', $hirs_provisioner::package_ensure ),
-#      default => $hirs_provisioner::package_ensure,
-#    }
-
-#    package { $pkg_name:
-#      ensure => $_ensure,
-#    }
-#  }
-
   file { '/var/log/hirs':
     ensure => directory,
     mode   => '0750'

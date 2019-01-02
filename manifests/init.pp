@@ -46,7 +46,7 @@ class hirs_provisioner (
     if !defined('$_packages') {
       notify { "NOTICE: No TPM; skipping installation": }
     } else {
-      $tpm_enabled = true
+      $_tpm_enabled = true
       include '::hirs_provisioner::install'
       include '::hirs_provisioner::config'
 

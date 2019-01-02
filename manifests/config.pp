@@ -41,7 +41,7 @@ class hirs_provisioner::config (
     # set TPM_ENABLED
     'tpm-enabled':
       path  => '/etc/hirs/hirs-site.config',
-      line  => "TPM_ENABLED=$::hirs_provisioner::tpm_enabled",
+      line  => "TPM_ENABLED=$::hirs_provisioner::_tpm_enabled",
       match => "^TPM_ENABLED=.*$";
 
     # set IMA_ENABLED
