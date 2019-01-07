@@ -1,5 +1,5 @@
 # create "tpm_1_2_enabled" custom puppet fact
-Facter.add("tpm_1_2_enabled") do
+Facter.add("hirs_tpm_1_2_enabled") do
   confine :kernel => 'Linux'
   confine { Facter::Core::Execution.which('tpm_version') }
   setcode do

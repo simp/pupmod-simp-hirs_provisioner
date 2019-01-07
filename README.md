@@ -16,10 +16,19 @@
 6. [Development - Guide for contributing to the module](#development)
     * [Acceptance Tests - Beaker env variables](#acceptance-tests)
 
+---
+
+    +---------------------------------------------------------------+
+    | WARNING: This is currently an **EXPERIMENTAL** module things  |
+    | may change drastically, and in breaking ways, without notice! |
+    +---------------------------------------------------------------+
+
+---
+
 ## Description
 
 This module manages Host Integrity at Runtime and Start-up (HIRS) provisioning.
-It installs and configures the necessary packages and components to 
+It installs and configures the necessary packages and components to
 register the system with an Attestation Certificate Authority, which can
 ensure Trusted Computing Group based Supply Chain Validation of systems.
 
