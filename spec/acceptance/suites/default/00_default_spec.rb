@@ -1,11 +1,11 @@
 require 'spec_helper_acceptance'
 
-test_name '<%= metadata.name %> class'
+test_name 'hirs_provisioner class'
 
-describe '<%= metadata.name %> class' do
+describe 'hirs_provisioner class' do
   let(:manifest) {
     <<-EOS
-      class { '<%= metadata.name %>': }
+      include 'hirs_provisioner'
     EOS
   }
 
@@ -20,13 +20,13 @@ describe '<%= metadata.name %> class' do
     end
 
 
-    describe package('<%= metadata.name %>') do
-      it { is_expected.to be_installed }
-    end
+#    describe package('hirs_provisioner') do
+#      it { is_expected.to be_installed }
+#    end
 
-    describe service('<%= metadata.name %>') do
-      it { is_expected.to be_enabled }
-      it { is_expected.to be_running }
-    end
+#    describe service('hirs_provisioner') do
+#      it { is_expected.to be_enabled }
+#      it { is_expected.to be_running }
+#    end
   end
 end

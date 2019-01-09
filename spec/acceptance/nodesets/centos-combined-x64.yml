@@ -9,8 +9,8 @@ HOSTS:
   el7:
     roles:
       - default
-      - master
-      - client
+      - tpm12
+      - tpm2
     platform:   el-7-x86_64
     box:        centos/7
     hypervisor: <%= hypervisor %>
@@ -21,7 +21,7 @@ HOSTS:
           - https://getfedora.org/static/352C64E5.txt
   el6:
     roles:
-      - client
+      - tpm12
     platform:   el-6-x86_64
     box:        centos/6
     hypervisor: <%= hypervisor %>
