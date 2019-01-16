@@ -1,8 +1,8 @@
 require 'spec_helper_acceptance'
 
-test_name 'hirs_provisioner class'
+test_name 'hirs_provisioner class with no tpm'
 
-describe 'hirs_provisioner class' do
+describe 'hirs_provisioner class with no tpm' do
   let(:manifest) {
     <<-EOS
       include 'hirs_provisioner'
