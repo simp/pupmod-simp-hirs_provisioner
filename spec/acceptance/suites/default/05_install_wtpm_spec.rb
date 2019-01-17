@@ -123,7 +123,8 @@ describe 'hirs_provisioner class' do
   #create a local repo with the necessary HIRS rpms
   #this can be replaced later when the packages are signed and added to the extras repo
   def create_local_repo(hirs)
-    hirs.each { |hirs| hirs.install_package('createrepo') }
+    #hirs.each { |hirs| hirs.install_package('createrepo') }
+    hosts.each { |hirs| hirs.install_package('createrepo') }
     on hirs, 'mkdir /usr/local/repo'
     on hirs, 'cd /usr/local/repo; curl -L -O https://github.com/nsacyber/HIRS/releases/download/v1.0.2/HIRS_Provisioner_TPM_2_0-1.0.2-1541093721.d1bdf9.el7.x86_64.rpm'
     on hirs, 'cd /usr/local/repo; curl -L -O https://github.com/nsacyber/HIRS/releases/download/v1.0.2/HIRS_Provisioner_TPM_1_2-1.0.2-1541093721.d1bdf9.el6.noarch.rpm'
@@ -158,11 +159,11 @@ hirs_provisioner::config::aca_fqdn: aca
 
   context 'with a tpm' do
 
-      setup_aca(aca)
+    before { setup_aca(aca) }
 
     # Using puppet_apply as a helper
     it 'should work with no errors' do
-      set_hieradata_on(tpm_1_2, hieradata)
+      set_hieradata_on(hirs, hieradata)
 #      implement_workarounds(hosts,tpm_2_0) #commented out for now
       install_pre_suite_rpms(hirs)
       create_local_repo(hirs)
