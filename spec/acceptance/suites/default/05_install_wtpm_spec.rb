@@ -1,10 +1,15 @@
 require 'spec_helper_acceptance'
 
-test_name 'hirs_provisioner class with tpm'
+test_name 'hirs_provisioner class'
 
-describe 'hirs_provisioner class with tpm' do
+describe 'hirs_provisioner class' do
 
-  def download_rpm_tarball_on(hosts, rpm_staging_dir)
+  let(:hirs){ only_host_with_role( hosts, 'default' ) }
+  let(:aca){ only_host_with_role( hosts, 'aca' ) }
+  let(:tpm_1_2){ only_host_with_role( hosts, 'tpm_1_2' ) }
+  let(:tpm_2_0){ only_host_with_role( hosts, 'tpm_2_0' ) }
+
+  def download_rpm_tarball_on(hirs, rpm_staging_dir)
   #  let (:tpm_rpms_tarball_url_string) {only_host_with_role( hosts, 'tpm_2_0' ) }
   #    tpm_rpms_tarball_url_string = ENV['BEAKER_tpm_2_0_rpms_tarball_url'] || \
   #    'https://github.com/op-ct/simp-tpm2-rpms/releases/download/0.1.0-rpms/simp-tpm2-simulator-1119.0.0-0.el7.centos.x86_64.rpm'
@@ -28,13 +33,13 @@ describe 'hirs_provisioner class with tpm' do
   end
 
   # Install all `*.rpm` files in `rpm_staging_dir/`
-  def install_rpms_staged_on(hosts,rpm_staging_dir)
-    on hosts, "yum localinstall -y #{rpm_staging_dir}/*.rpm"
+  def install_rpms_staged_on(hirs,rpm_staging_dir)
+    on hirs, "yum localinstall -y #{rpm_staging_dir}/*.rpm"
   end
 
   # If local .rpm files have been staged in an 'rpms/' directory at the top
   # level of the repository, upload them to the SUTs' RPM staging directories
-  def upload_locally_staged_rpms_to(hosts, rpm_staging_dir)
+  def upload_locally_staged_rpms_to(hirs, rpm_staging_dir)
     rpms = Dir['*.rpm'] + Dir[File.join('rpms','*.rpm')]
     rpms.each do |f|
       scp_to(hosts,f,rpm_staging_dir)
@@ -50,14 +55,14 @@ describe 'hirs_provisioner class with tpm' do
     on hosts, 'systemctl restart dbus'
   end
 
-  def install_pre_suite_rpms(hosts)
+  def install_pre_suite_rpms(hirs)
     download_rpms   = !ENV.fetch('BEAKER_download_pre_suite_rpms','yes') == 'no'
     rpm_staging_dir = "/root/rpms.#{$$}"
 
     on hosts, "mkdir -p #{rpm_staging_dir}"
     download_rpm_tarball_on(hosts, rpm_staging_dir) unless download_rpms
-    upload_locally_staged_rpms_to(hosts, rpm_staging_dir)
-    install_rpms_staged_on(hosts, rpm_staging_dir)
+    upload_locally_staged_rpms_to(hirs, rpm_staging_dir)
+    install_rpms_staged_on(hirs, rpm_staging_dir)
   end
 
   # starts tpm2sim service on (hosts)
@@ -105,31 +110,37 @@ describe 'hirs_provisioner class with tpm' do
 
   # starts tpm 1.2 simulator services on (hosts)
   #def start_tpm_1_2_sim(hosts,tpm_1_2)
-  def start_tpm_1_2_sim(hosts)
-    on hosts, 'yum install -y trousers gcc tpm-tools'
-    on hosts, 'systemctl start tpm12-simulator'
-    on hosts, 'systemctl start tpm12-tpmbios'
-    on hosts, 'systemctl restart tpm12-simulator'
-    on hosts, 'systemctl restart tpm12-tpmbios'
-    on hosts, 'systemctl start tpm12-tpminit'
-    on hosts, 'systemctl start tpm12-tcsd'
-    on hosts, 'netstat -plnt | grep tcsd ' \
-      + %q[|| echo "tcsd not running"]
+  def start_tpm_1_2_sim(tpm_1_2)
+    on tpm_1_2, 'yum install -y trousers gcc tpm-tools'
+    on tpm_1_2, 'systemctl start tpm12-simulator'
+    on tpm_1_2, 'systemctl start tpm12-tpmbios'
+    on tpm_1_2, 'systemctl restart tpm12-simulator'
+    on tpm_1_2, 'systemctl restart tpm12-tpmbios'
+    on tpm_1_2, 'systemctl start tpm12-tpminit'
+    on tpm_1_2, 'systemctl start tpm12-tcsd'
   end
 
   #create a local repo with the necessary HIRS rpms
   #this can be replaced later when the packages are signed and added to the extras repo
-  def create_local_repo(hosts)
-    hosts.each { |host| host.install_package('createrepo') }
-    on hosts, 'mkdir /usr/local/repo'
-    on hosts, 'cd /usr/local/repo; curl -L -O https://github.com/nsacyber/HIRS/releases/download/v1.0.2/HIRS_Provisioner_TPM_2_0-1.0.2-1541093721.d1bdf9.el7.x86_64.rpm'
-    on hosts, 'cd /usr/local/repo; curl -L -O https://github.com/nsacyber/HIRS/releases/download/v1.0.2/HIRS_Provisioner_TPM_1_2-1.0.2-1541093721.d1bdf9.el6.noarch.rpm'
-    on hosts, 'cd /usr/local/repo; curl -L -O https://github.com/nsacyber/HIRS/releases/download/v1.0.2/HIRS_Provisioner_TPM_1_2-1.0.2-1541093721.d1bdf9.el7.noarch.rpm'
-    on hosts, 'cd /usr/local/repo; curl -L -O https://github.com/nsacyber/HIRS/releases/download/v1.0.2/tpm_module-1.0.2-1541093721.d1bdf9.x86_64.rpm'
-    on hosts, 'cd /usr/local/repo; curl -L -O https://github.com/nsacyber/paccor/releases/download/v1.0.6r3/paccor-1.0.6-3.noarch.rpm'
-    on hosts, 'createrepo /usr/local/repo'
-    on hosts, 'printf "[local.repo]\nname=local\nbaseurl=file:///usr/local/repo\nenabled=1\ngpgcheck=0" > /etc/yum.repos.d/local.repo'
+  def create_local_repo(hirs)
+    hirs.each { |hirs| hirs.install_package('createrepo') }
+    on hirs, 'mkdir /usr/local/repo'
+    on hirs, 'cd /usr/local/repo; curl -L -O https://github.com/nsacyber/HIRS/releases/download/v1.0.2/HIRS_Provisioner_TPM_2_0-1.0.2-1541093721.d1bdf9.el7.x86_64.rpm'
+    on hirs, 'cd /usr/local/repo; curl -L -O https://github.com/nsacyber/HIRS/releases/download/v1.0.2/HIRS_Provisioner_TPM_1_2-1.0.2-1541093721.d1bdf9.el6.noarch.rpm'
+    on hirs, 'cd /usr/local/repo; curl -L -O https://github.com/nsacyber/HIRS/releases/download/v1.0.2/HIRS_Provisioner_TPM_1_2-1.0.2-1541093721.d1bdf9.el7.noarch.rpm'
+    on hirs, 'cd /usr/local/repo; curl -L -O https://github.com/nsacyber/HIRS/releases/download/v1.0.2/tpm_module-1.0.2-1541093721.d1bdf9.x86_64.rpm'
+    on hirs, 'cd /usr/local/repo; curl -L -O https://github.com/nsacyber/paccor/releases/download/v1.0.6r3/paccor-1.0.6-3.noarch.rpm'
+    on hirs, 'createrepo /usr/local/repo'
+    on hirs, 'printf "[local.repo]\nname=local\nbaseurl=file:///usr/local/repo\nenabled=1\ngpgcheck=0" > /etc/yum.repos.d/local.repo'
   end
+
+  #install an aca for the provisioners to talk to
+  def setup_aca(aca)
+    on aca, 'curl -L -O https://github.com/nsacyber/HIRS/releases/download/v1.0.2/HIRS_AttestationCA-1.0.2-1541093721.d1bdf9.el7.noarch.rpm'
+    on aca, 'yum install -y mariadb-server openssl tomcat java-1.8.0 rpmdevtools coreutils initscripts chkconfig sed grep firewalld policycoreutils'
+    on aca, 'yum localinstall -y HIRS_AttestationCA-1.0.2-1541093721.d1bdf9.el7.noarch.rpm'
+  end
+
 
 
   let(:manifest) {
@@ -138,27 +149,36 @@ describe 'hirs_provisioner class with tpm' do
     EOS
   }
 
+  let(:hieradata) {
+    <<-EOS
+---
+hirs_provisioner::config::aca_fqdn: aca
+    EOS
+  }
 
   context 'with a tpm' do
 
+      setup_aca(aca)
+
     # Using puppet_apply as a helper
     it 'should work with no errors' do
+      set_hieradata_on(tpm_1_2, hieradata)
 #      implement_workarounds(hosts,tpm_2_0) #commented out for now
-      install_pre_suite_rpms(hosts)
-      create_local_repo(hosts)
+      install_pre_suite_rpms(hirs)
+      create_local_repo(hirs)
 #      configure_tpm2_0_tools(hosts,tpm_2_0) #commented out for now
 #      start_tpm_1_2_sim(hosts,tpm_1_2) #commented out for now
-      start_tpm_1_2_sim(hosts)
+      start_tpm_1_2_sim(tpm_1_2)
 
-      apply_manifest(manifest, :catch_failures => true)
+      apply_manifest_on(hirs, manifest, :catch_failures => true)
     end
 
     it 'should be idempotent' do
-      apply_manifest(manifest, :catch_changes => true)
+      apply_manifest_on(hirs, manifest, :catch_changes => true)
     end
 
 
-    describe package('hirs_provisioner') do
+    describe package('HIRS_Provisioner_TPM_1_2') do
       it { is_expected.to be_installed }
     end
 
