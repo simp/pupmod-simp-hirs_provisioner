@@ -4,20 +4,20 @@ test_name 'hirs_provisioner class'
 
 describe 'hirs_provisioner class' do
 
-  let(:hirs){ only_host_with_role( hosts, 'default' ) }
-  let(:aca){ only_host_with_role( hosts, 'aca' ) }
-  let(:tpm_1_2){ only_host_with_role( hosts, 'tpm_1_2' ) }
-  let(:tpm_2_0){ only_host_with_role( hosts, 'tpm_2_0' ) }
+  let(:tpm_1_2){ hosts_with_role( hosts, 'tpm_1_2' ) }
+  let(:tpm_2_0){ hosts_with_role( hosts, 'tpm_2_0' ) }
 
   def download_rpm_tarball_on(hirs, rpm_staging_dir)
-  #  let (:tpm_rpms_tarball_url_string) {only_host_with_role( hosts, 'tpm_2_0' ) }
-  #    tpm_rpms_tarball_url_string = ENV['BEAKER_tpm_2_0_rpms_tarball_url'] || \
-  #    'https://github.com/op-ct/simp-tpm2-rpms/releases/download/0.1.0-rpms/simp-tpm2-simulator-1119.0.0-0.el7.centos.x86_64.rpm'
-      ### 'https://github.com/op-ct/simp-tpm2-rpms/releases/download/0.1.0/simp-tpm-rpms-0.1.0.tar.gz'
-  #  let (:tpm_rpms_tarball_url_string) {only_host_with_role( hosts, 'tpm_1_2' ) }
+    #=begin
+    if hirs.host_hash[:roles].include?('tpm_2_0')
+      tpm_rpms_tarball_url_string = ENV['BEAKER_tpm_2_0_rpms_tarball_url'] || \
+      'https://github.com/op-ct/simp-tpm2-rpms/releases/download/0.1.0-rpms/simp-tpm2-simulator-1119.0.0-0.el7.centos.x86_64.rpm'
+    else 
+      os = fact_on(hirs,'operatingsystemmajrelease')
       tpm_rpms_tarball_url_string = ENV['BEAKER_tpm_1_2_rpms_tarball_url'] || \
-      'https://github.com/m-morrone/simp-tpm12-rpms/releases/download/v0.1-beta/simp-tpm12-simulator-4769.0.0-0.el7.x86_64.rpm'
-  #    'https://github.com/m-morrone/simp-tpm12-rpms/releases/download/v0.1-beta/simp-tpm12-simulator-4769.0.0-0.el$fact[operatingsystemmajrelease].x86_64.rpm'
+      "https://github.com/m-morrone/simp-tpm12-rpms/releases/download/v0.1-beta/simp-tpm12-simulator-4769.0.0-0.el#{os}.x86_64.rpm"
+      #'https://github.com/m-morrone/simp-tpm12-rpms/releases/download/v0.1-beta/simp-tpm12-simulator-4769.0.0-0.el7.x86_64.rpm'
+    end
     urls = tpm_rpms_tarball_url_string.split(/,/)
     urls.each do |url|
       file = File.basename url
@@ -59,8 +59,8 @@ describe 'hirs_provisioner class' do
     download_rpms   = !ENV.fetch('BEAKER_download_pre_suite_rpms','yes') == 'no'
     rpm_staging_dir = "/root/rpms.#{$$}"
 
-    on hosts, "mkdir -p #{rpm_staging_dir}"
-    download_rpm_tarball_on(hosts, rpm_staging_dir) unless download_rpms
+    on hirs, "mkdir -p #{rpm_staging_dir}"
+    download_rpm_tarball_on(hirs, rpm_staging_dir) unless download_rpms
     upload_locally_staged_rpms_to(hirs, rpm_staging_dir)
     install_rpms_staged_on(hirs, rpm_staging_dir)
   end
@@ -124,7 +124,8 @@ describe 'hirs_provisioner class' do
   #this can be replaced later when the packages are signed and added to the extras repo
   def create_local_repo(hirs)
     #hirs.each { |hirs| hirs.install_package('createrepo') }
-    hosts.each { |hirs| hirs.install_package('createrepo') }
+    #hosts.each { |hirs| hirs.install_package('createrepo') }
+    hirs.install_package('createrepo')
     on hirs, 'mkdir /usr/local/repo'
     on hirs, 'cd /usr/local/repo; curl -L -O https://github.com/nsacyber/HIRS/releases/download/v1.0.2/HIRS_Provisioner_TPM_2_0-1.0.2-1541093721.d1bdf9.el7.x86_64.rpm'
     on hirs, 'cd /usr/local/repo; curl -L -O https://github.com/nsacyber/HIRS/releases/download/v1.0.2/HIRS_Provisioner_TPM_1_2-1.0.2-1541093721.d1bdf9.el6.noarch.rpm'
@@ -157,35 +158,44 @@ hirs_provisioner::config::aca_fqdn: aca
     EOS
   }
 
-  context 'with a tpm' do
+  context 'set up aca' do
+#    before { setup_aca(aca) }
+    it 'should start the aca server' do
+#begin
+#require 'pry'; binding.pry
+      aca_host = only_host_with_role( hosts, 'aca' )
+      setup_aca(aca_host)
+#rescue Exception => e
+#require 'pry'; binding.pry
+#end
+    end
+  end
 
-    before { setup_aca(aca) }
+  context 'with a tpm' do
+    hosts_with_role(hosts, 'hirs').each do |hirs_host|
 
     # Using puppet_apply as a helper
-    it 'should work with no errors' do
-      set_hieradata_on(hirs, hieradata)
-#      implement_workarounds(hosts,tpm_2_0) #commented out for now
-      install_pre_suite_rpms(hirs)
-      create_local_repo(hirs)
-#      configure_tpm2_0_tools(hosts,tpm_2_0) #commented out for now
-#      start_tpm_1_2_sim(hosts,tpm_1_2) #commented out for now
-      start_tpm_1_2_sim(tpm_1_2)
+      it 'should work with no errors' do
+        set_hieradata_on(hirs_host, hieradata)
+        create_local_repo(hirs_host)
+#        implement_workarounds(hosts,tpm_2_0) #commented out for now
+        install_pre_suite_rpms(hirs_host)
+#        configure_tpm2_0_tools(hosts,tpm_2_0) #commented out for now
+#        start_tpm_1_2_sim(hosts,tpm_1_2) #commented out for now
+        start_tpm_1_2_sim(hirs_host)
 
-      apply_manifest_on(hirs, manifest, :catch_failures => true)
+        apply_manifest_on(hirs_host, manifest, :catch_failures => true)
+      end
+
+      it 'should be idempotent' do
+        apply_manifest_on(hirs_host, manifest, :catch_changes => true)
+      end
+
+
+      describe package('HIRS_Provisioner_TPM_1_2') do
+        it { is_expected.to be_installed }
+      end
+
     end
-
-    it 'should be idempotent' do
-      apply_manifest_on(hirs, manifest, :catch_changes => true)
-    end
-
-
-    describe package('HIRS_Provisioner_TPM_1_2') do
-      it { is_expected.to be_installed }
-    end
-
-#    describe service('hirs_provisioner') do
-#      it { is_expected.to be_enabled }
-#      it { is_expected.to be_running }
-#    end
   end
 end
