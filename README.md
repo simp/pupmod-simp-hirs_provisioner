@@ -16,10 +16,19 @@
 6. [Development - Guide for contributing to the module](#development)
     * [Acceptance Tests - Beaker env variables](#acceptance-tests)
 
+---
+
+    +---------------------------------------------------------------+
+    | WARNING: This is currently an **EXPERIMENTAL** module things  |
+    | may change drastically, and in breaking ways, without notice! |
+    +---------------------------------------------------------------+
+
+---
+
 ## Description
 
 This module manages Host Integrity at Runtime and Start-up (HIRS) provisioning.
-It installs and configures the necessary packages and components to 
+It installs and configures the necessary packages and components to
 register the system with an Attestation Certificate Authority, which can
 ensure Trusted Computing Group based Supply Chain Validation of systems.
 
@@ -89,7 +98,14 @@ Please read our [Contribution Guide](http://simp-doc.readthedocs.io/en/stable/co
 
 ### Acceptance tests
 
-TODO: There are currently no acceptance tests. We would need to use a virtual
-TPM to ensure test system stability, and it requires patches to libvirt,
-associated emulation software, Beaker, and Vagrant before acceptance
-tests for this module become feasible. Read our progress so far on the [issue](https://simp-project.atlassian.net/browse/SIMP-5897).
+This module includes [Beaker](https://github.com/puppetlabs/beaker) acceptance
+tests using the SIMP [Beaker Helpers](https://github.com/simp/rubygem-simp-beaker-helpers).
+By default the tests use [Vagrant](https://www.vagrantup.com/) with
+[VirtualBox](https://www.virtualbox.org) as a back-end; Vagrant and VirtualBox
+must both be installed to run these tests without modification. To execute the
+tests run the following:
+
+```shell
+bundle install
+bundle exec rake beaker:suites
+```

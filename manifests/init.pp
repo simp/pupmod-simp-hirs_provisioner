@@ -32,10 +32,10 @@ class hirs_provisioner (
 
   simplib::assert_metadata($module_name)
 
-  if $facts['tpm_1_2_enabled'] {
+  if $facts['hirs_tpm_1_2_enabled'] {
     $tpm_version = '1.2'
     $_packages = $tpm_1_2_packages
-  } elsif $facts['tpm_2_0_enabled'] {
+  } elsif $facts['hirs_tpm_2_0_enabled'] {
     $tpm_version = '2.0'
     $_packages = $tpm_2_0_packages
   }
