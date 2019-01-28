@@ -4,9 +4,6 @@ test_name 'install tpm simulators'
 
 describe 'install tpm_simulators' do
 
-#  let(:tpm_1_2){ hosts_with_role( hosts, 'tpm_1_2' ) }
-#  let(:tpm_2_0){ hosts_with_role( hosts, 'tpm_2_0' ) }
-
   def download_rpm_tarball_on(hirs_host, rpm_staging_dir)
     #=begin
     if hirs_host.host_hash[:roles].include?('tpm_2_0')
@@ -67,6 +64,7 @@ describe 'install tpm_simulators' do
 
   # starts tpm2sim service
   def start_tpm2sim_on(hirs_host)
+    on hirs_host, 'yum install -y tpm2-tools'
     on hirs_host, 'runuser tpm2sim --shell /bin/sh -c ' \
       '"cd /tmp; nohup /usr/local/bin/tpm2-simulator &> /tmp/tpm2-simulator.log &"', \
       pty: true, run_in_parallel: true
