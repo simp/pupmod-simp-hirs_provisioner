@@ -11,6 +11,7 @@ describe 'hirs_provisioner class with no tpm' do
   }
 
   hosts_with_role(hosts, 'hirs').each do |hirs_host|
+    # This tests that nothing bad happens when the module is applied with no TPM
     context 'default parameters' do
       # Using puppet_apply as a helper
       it 'should work with no errors' do
