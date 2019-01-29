@@ -45,15 +45,9 @@ hirs_provisioner::config::aca_fqdn: aca
   }
 
   context 'set up aca' do
-#    before { setup_aca(aca) }
     it 'should start the aca server' do
-#begin
-#require 'pry'; binding.pry
       aca_host = only_host_with_role( hosts, 'aca' )
       setup_aca(aca_host)
-#rescue Exception => e
-#require 'pry'; binding.pry
-#end
     end
   end
 
