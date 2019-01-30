@@ -43,7 +43,7 @@ describe 'install tpm_simulators' do
     end
   end
 
-  # Implement any workarounds that are needed to get
+  # Implement any workarounds that are needed to run as service
   def implement_workarounds(hirs_host)
     # workaround for dbus config file mismatch error:
     #
@@ -106,7 +106,13 @@ describe 'install tpm_simulators' do
       [tpm2_status['ownerAuthSet'],tpm2_status['endorsementAuthSet'],tpm2_status['lockoutAuthSet']]
   end
 
-  # starts tpm 1.2 simulator services
+  # starts tpm 1.2 simulator services 
+  # Per the README file included with the source code, procedures for starting the tpm are:
+  #   Start the TPM in another shell after setting its environment variables
+  #     (TPM_PATH,TPM_PORT)
+  #     > cd utils
+  #     > ./tpmbios
+  #   Kill the TPM in the other shell and restart it
   def start_tpm_1_2_sim(hirs_host)
     os = fact_on(hirs_host,'operatingsystemmajrelease')
     on hirs_host, 'yum install -y trousers gcc tpm-tools'
