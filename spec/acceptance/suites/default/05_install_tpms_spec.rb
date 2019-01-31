@@ -5,7 +5,6 @@ test_name 'install tpm simulators'
 describe 'install tpm_simulators' do
 
   def download_rpm_tarball_on(hirs_host, rpm_staging_dir)
-    #=begin
     if hirs_host.host_hash[:roles].include?('tpm_2_0')
       tpm_rpms_tarball_url_string = ENV['BEAKER_tpm_2_0_rpms_tarball_url'] || \
       'https://github.com/op-ct/simp-tpm2-rpms/releases/download/0.1.0-rpms/simp-tpm2-simulator-1119.0.0-0.el7.centos.x86_64.rpm'
@@ -13,7 +12,6 @@ describe 'install tpm_simulators' do
       os = fact_on(hirs_host,'operatingsystemmajrelease')
       tpm_rpms_tarball_url_string = ENV['BEAKER_tpm_1_2_rpms_tarball_url'] || \
       "https://github.com/m-morrone/simp-tpm12-rpms/releases/download/v0.1-beta/simp-tpm12-simulator-4769.0.0-0.el#{os}.x86_64.rpm"
-      #'https://github.com/m-morrone/simp-tpm12-rpms/releases/download/v0.1-beta/simp-tpm12-simulator-4769.0.0-0.el7.x86_64.rpm'
     end
     urls = tpm_rpms_tarball_url_string.split(/,/)
     urls.each do |url|
