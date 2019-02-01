@@ -27,6 +27,7 @@ describe 'hirs_provisioner class' do
     on aca, 'curl -L -O https://github.com/nsacyber/HIRS/releases/download/v1.0.2/HIRS_AttestationCA-1.0.2-1541093721.d1bdf9.el7.noarch.rpm'
     on aca, 'yum install -y mariadb-server openssl tomcat java-1.8.0 rpmdevtools coreutils initscripts chkconfig sed grep firewalld policycoreutils'
     on aca, 'yum localinstall -y HIRS_AttestationCA-1.0.2-1541093721.d1bdf9.el7.noarch.rpm'
+    sleep(10)
   end
 
 
