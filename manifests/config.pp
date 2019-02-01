@@ -23,76 +23,77 @@ class hirs_provisioner::config (
 ) {
   assert_private()
 
-  # generate hirs-site.config
-  exec { 'hirs-provision-config':
-    command => '/usr/sbin/hirs-provisioner -c',
-    onlyif  => '/usr/bin/test ! -f /etc/hirs/hirs-site.config'
-  }
+  exec {
+    # generate hirs-site.config
+    'hirs-provision-config':
+      command => '/usr/sbin/hirs-provisioner -c',
+      onlyif  => '/usr/bin/test ! -f /etc/hirs/hirs-site.config'
+  } ->
 
   file_line {
-    default:
-      * => {
-        require => Exec['hirs-provision-config'],
-        notify  => Exec['hirs-provision-client']
-      };
 
     # set CLIENT_HOSTNAME
     'client-hostname':
       path  => '/etc/hirs/hirs-site.config',
       line  => 'CLIENT_HOSTNAME=$HOSTNAME',
-      match => '^CLIENT_HOSTNAME=.*$';
+      match => "^CLIENT_HOSTNAME=.*$";
 
     # set TPM_ENABLED
     'tpm-enabled':
       path  => '/etc/hirs/hirs-site.config',
-      line  => "TPM_ENABLED=${::hirs_provisioner::_tpm_enabled}",
-      match => '^TPM_ENABLED=.*$';
+      line  => "TPM_ENABLED=$::hirs_provisioner::_tpm_enabled",
+      match => "^TPM_ENABLED=.*$";
 
     # set IMA_ENABLED
     'ima-enabled':
       path  => '/etc/hirs/hirs-site.config',
       line  => "IMA_ENABLED=${facts['cmdline']['ima'] == 'on'}",
-      match => '^IMA_ENABLED=.*$';
+      match => "^IMA_ENABLED=.*$";
 
     # set ATTESTATION_CA_FQDN
     'aca-fqdn':
       path  => '/etc/hirs/hirs-site.config',
-      line  => "ATTESTATION_CA_FQDN=${aca_fqdn}",
-      match => '^ATTESTATION_CA_FQDN=.*$';
+      line  => "ATTESTATION_CA_FQDN=$aca_fqdn",
+      match => "^ATTESTATION_CA_FQDN=.*$";
 
     # set ATTESTATION_CA_Port
     'aca-port':
       path  => '/etc/hirs/hirs-site.config',
-      line  => "ATTESTATION_CA_PORT=${aca_port}",
-      match => '^ATTESTATION_CA_PORT=.*$';
+      line  => "ATTESTATION_CA_PORT=$aca_port",
+      match => "^ATTESTATION_CA_PORT=.*$";
 
     # set BROKER_FQDN
     'broker-fqdn':
       path  => '/etc/hirs/hirs-site.config',
-      line  => "BROKER_FQDN=${aca_fqdn}",
-      match => '^BROKER_FQDN=.*$';
+      line  => "BROKER_FQDN=$aca_fqdn",
+      match => "^BROKER_FQDN=.*$";
 
     # set BROKER_PORT
     'broker-port':
       path  => '/etc/hirs/hirs-site.config',
-      line  => "BROKER_PORT=${broker_port}",
-      match => '^BROKER_PORT=.*$';
+      line  => "BROKER_PORT=$broker_port",
+      match => "^BROKER_PORT=.*$";
 
     # set PORTAL_FQDN
     'portal-fqdn':
       path  => '/etc/hirs/hirs-site.config',
-      line  => "PORTAL_FQDN=${aca_fqdn}",
-      match => '^PORTAL_FQDN=.*$';
+      line  => "PORTAL_FQDN=$aca_fqdn",
+      match => "^PORTAL_FQDN=.*$";
 
     # set PORTAL_PORT
     'portal-port':
       path  => '/etc/hirs/hirs-site.config',
-      line  => "PORTAL_PORT=${portal_port}",
-      match => '^PORTAL_PORT=.*$'
+      line  => "PORTAL_PORT=$portal_port",
+      match => "^PORTAL_PORT=.*$"
+
+  } ~>
+
+  exec {
+
+    # provision hirs client
+    'hirs-provision-client':
+      command     => '/usr/sbin/hirs-provisioner provision',
+      refreshonly => true;
   }
 
-  exec { 'hirs-provision-client':
-    command     => '/usr/sbin/hirs-provisioner provision',
-    refreshonly => true
-  }
 }

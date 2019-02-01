@@ -1,32 +1,26 @@
 require 'spec_helper_acceptance'
 
-test_name '<%= metadata.name %> class'
+test_name 'hirs_provisioner class with no tpm'
 
-describe '<%= metadata.name %> class' do
+describe 'hirs_provisioner class with no tpm' do
+
   let(:manifest) {
     <<-EOS
-      class { '<%= metadata.name %>': }
+      include 'hirs_provisioner'
     EOS
   }
 
-  context 'default parameters' do
-    # Using puppet_apply as a helper
-    it 'should work with no errors' do
-      apply_manifest(manifest, :catch_failures => true)
-    end
+  hosts_with_role(hosts, 'hirs').each do |hirs_host|
+    # This tests that nothing bad happens when the module is applied with no TPM
+    context 'default parameters' do
+      # Using puppet_apply as a helper
+      it 'should work with no errors' do
+        apply_manifest_on(hirs_host, manifest, :catch_failures => true)
+      end
 
-    it 'should be idempotent' do
-      apply_manifest(manifest, :catch_changes => true)
-    end
-
-
-    describe package('<%= metadata.name %>') do
-      it { is_expected.to be_installed }
-    end
-
-    describe service('<%= metadata.name %>') do
-      it { is_expected.to be_enabled }
-      it { is_expected.to be_running }
+      it 'should be idempotent' do
+        apply_manifest_on(hirs_host, manifest, :catch_changes => true)
+      end
     end
   end
 end
