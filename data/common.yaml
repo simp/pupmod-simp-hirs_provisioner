@@ -3,24 +3,12 @@
 
 # In addition to the HIRS_Provisioner and paccor packeages, all packages below
 # are specified as dependencies in the HIRS documentation but not necessarily
-# included as depencies for the HIRS_Provisioner RPM.  Will investigate
+# included as dependencies for the HIRS_Provisioner RPM.  Will investigate
 # paring down the list.
 
 hirs_provisioner::tpm_1_2_packages:
-  gcc: ~
-  initscripts: ~
-  trousers: ~
-  tpm-tools: ~
-  openssl-devel: ~
-  libtool: ~
-  paccor: ~
-  tpm_module: ~
   HIRS_Provisioner_TPM_1_2: ~
   
 hirs_provisioner::tpm_2_0_packages:
   java-1.8.0-openjdk: ~
-  gcc: ~
-  openssl-devel: ~
-  libcurl-devel: ~
-  paccor: ~
   HIRS_Provisioner_TPM_2_0: ~

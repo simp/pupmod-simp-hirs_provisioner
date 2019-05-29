@@ -88,12 +88,18 @@ class hirs_provisioner::config (
 
   } ~>
 
-  exec {
-
-    # provision hirs client
-    'hirs-provision-client':
-      command     => '/usr/sbin/hirs-provisioner provision',
-      refreshonly => true;
+  # provision hirs client
+  if $::hirs_provisioner::tpm_version == '2.0' {
+    exec {
+      'hirs-provision-client':
+        command     => '/usr/sbin/hirs-provisioner-tpm2 provision',
+        refreshonly => true;
+    }
+  } else {
+    exec { 
+      'hirs-provision-client':
+        command     => '/usr/sbin/hirs-provisioner provision',
+        refreshonly => true;
+    }
   }
-
 }

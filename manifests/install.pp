@@ -20,11 +20,4 @@ class hirs_provisioner::install {
     mode   => '0750'
   }
 
-  if $::hirs_provisioner::tpm_version == '2.0' {
-    file { '/usr/sbin/hirs-provisioner':
-      ensure => 'link',
-      target => '/usr/local/bin/hirs-provisioner-tpm2'
-    }
-  }
-
 }
