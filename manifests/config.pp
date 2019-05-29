@@ -96,7 +96,7 @@ class hirs_provisioner::config (
         refreshonly => true;
     }
   } else {
-    exec { 
+    exec {
       'hirs-provision-client':
         command     => '/usr/sbin/hirs-provisioner provision',
         refreshonly => true;
