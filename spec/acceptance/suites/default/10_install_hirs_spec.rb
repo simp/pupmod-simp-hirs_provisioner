@@ -6,7 +6,8 @@ describe 'hirs_provisioner class' do
 
   #install an aca for the provisioners to talk to
   def setup_aca(aca)
-    on aca, 'yum install -y mariadb-server openssl tomcat java-1.8.0 rpmdevtools coreutils initscripts chkconfig sed grep firewalld policycoreutils HIRS_AttestationCA'
+    on aca, 'yum install -y mariadb-server openssl tomcat java-1.8.0 rpmdevtools coreutils initscripts chkconfig sed grep firewalld policycoreutils'
+    on aca, 'yum install -y HIRS_AttestationCA'
     sleep(10)
   end
 
