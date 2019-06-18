@@ -3,7 +3,7 @@
 # @param enable_hirs
 #   This module will install and mangage HIRS unless `false`
 #
-# @param package_ensure 
+# @param package_ensure
 #   The default ensure parameter for packages.
 #
 # @param tpm_1_2_packages
@@ -14,9 +14,7 @@
 #     below:
 #
 #   @example Override packages
-#     { 'gedit' => { 'ensure' => '3.14.3' } }
-#
-#   @see data/common.yaml
+#     { 'HIRS_Provisioner' => { 'ensure' => '3.14.3' } }
 #
 # @param tpm_2_0_packages
 #   A hash of packages needed for HIRS with TPM 2.0.
@@ -26,8 +24,8 @@
 class hirs_provisioner (
   Boolean                         $enable           = true,
   String[1]                       $package_ensure   = simplib::lookup('simp_options::package_ensure', {'default_value' => 'installed'}),
-  Hash[String[1], Optional[Hash]] $tpm_1_2_packages = simplib::lookup('hirs_provisioner::tpm_1_2_packages'),
-  Hash[String[1], Optional[Hash]] $tpm_2_0_packages = simplib::lookup('hirs_provisioner::tpm_2_0_packages'),
+  Hash[String[1], Optional[Hash]] $tpm_1_2_packages = { 'HIRS_Provisioner_TPM_1_2' => {} },
+  Hash[String[1], Optional[Hash]] $tpm_2_0_packages = { 'HIRS_Provisioner_TPM_2_0' => {} }
 ) {
 
   simplib::assert_metadata($module_name)
