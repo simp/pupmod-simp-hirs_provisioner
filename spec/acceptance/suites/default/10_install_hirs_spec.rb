@@ -11,8 +11,6 @@ describe 'hirs_provisioner class' do
     sleep(10)
   end
 
-  let(:files_dir) { File.join(File.dirname(__FILE__), 'files') }
-
   let(:manifest) {
     <<-EOS
       include 'hirs_provisioner'
