@@ -1,8 +1,0 @@
----
-# hirs_provisioner::parameter_name: 'value'
-
-hirs_provisioner::tpm_1_2_packages:
-  HIRS_Provisioner_TPM_1_2: ~
-  
-hirs_provisioner::tpm_2_0_packages:
-  HIRS_Provisioner_TPM_2_0: ~
