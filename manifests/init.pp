@@ -1,6 +1,6 @@
-# Installs HIRS_Provisioner RPM and configures and registers with HIRS ACA
+# @summary Installs HIRS_Provisioner RPM and configures and registers with HIRS ACA
 #
-# @param enable_hirs
+# @param enable
 #   This module will install and mangage HIRS unless `false`
 #
 # @param package_ensure
@@ -13,8 +13,10 @@
 #   * The ensure value can be set in the hash of each package, like the example
 #     below:
 #
-#   @example Override packages
-#     { 'HIRS_Provisioner' => { 'ensure' => '3.14.3' } }
+#   Example: Override packages
+#   ```
+#   { 'HIRS_Provisioner' => { 'ensure' => '3.14.3' } }
+#   ```
 #
 # @param tpm_2_0_packages
 #   A hash of packages needed for HIRS with TPM 2.0.
