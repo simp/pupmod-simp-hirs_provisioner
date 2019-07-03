@@ -1,6 +1,4 @@
-# == Class hirs_provisioner::config
-#
-# This class is called from hirs_provisioner for service config.
+# @summary Called from `hirs_provisioner` for service config
 #
 # @param aca_fqdn
 #   The fully qualified domain name of the Attestation Certificate Authority

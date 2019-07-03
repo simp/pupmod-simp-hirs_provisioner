@@ -6,15 +6,20 @@
 
 #### Table of Contents
 
-1. [Description](#description)
-2. [Setup - The basics of getting started with hirs_provisioner](#setup)
-    * [Setup requirements](#setup-requirements)
-    * [Beginning with hirs_provisioner](#beginning-with-hirs_provisioner)
-3. [Usage - Configuration options and additional functionality](#usage)
-4. [Reference - An under-the-hood peek at what the module is doing and how](#reference)
-5. [Limitations - OS compatibility, etc.](#limitations)
-6. [Development - Guide for contributing to the module](#development)
-    * [Acceptance Tests - Beaker env variables](#acceptance-tests)
+<!-- vim-markdown-toc GFM -->
+
+* [Description](#description)
+  * [This is a SIMP module](#this-is-a-simp-module)
+* [Setup](#setup)
+  * [Setup Requirements](#setup-requirements)
+  * [Beginning with hirs_provisioner](#beginning-with-hirs_provisioner)
+* [Usage](#usage)
+* [Reference](#reference)
+* [Limitations](#limitations)
+* [Development](#development)
+  * [Acceptance tests](#acceptance-tests)
+
+<!-- vim-markdown-toc -->
 
 ---
 
@@ -28,17 +33,18 @@
 ## Description
 
 This module manages Host Integrity at Runtime and Start-up (HIRS) provisioning.
-It installs and configures the necessary packages and components to
-register the system with an Attestation Certificate Authority, which can
-ensure Trusted Computing Group based Supply Chain Validation of systems.
+It installs and configures the necessary packages and components to register
+the system with an Attestation Certificate Authority, which can ensure Trusted
+Computing Group based Supply Chain Validation of systems.
+
+See [REFERENCE.md](REFERENCE.md) for more details.
 
 ### This is a SIMP module
 
 This module is a component of the [System Integrity Management Platform](https://simp-project.com), a
 compliance-management framework built on Puppet.
 
-If you find any issues, they may be submitted to our [bug
-tracker](https://simp-project.atlassian.net/).
+If you find any issues, they may be submitted to our [bug tracker](https://simp-project.atlassian.net/).
 
 This module is optimally designed for use within a larger SIMP ecosystem, but
 it can be used independently:
@@ -64,16 +70,13 @@ devices.
 
 ### Beginning with hirs_provisioner
 
-Include the HIRS Provisioner class in Hiera.
-```yaml
-classes:
-  - hirs_provisioner
-```
+Simply `include hirs_provisioner`.
 
 ## Usage
 
 If the ACA is hosted on a remote system, it is necessary to specify the fully
 qualified domain name of that system in Hiera, by adding the following:
+
 ```yaml
 ---
 hirs_provisioner::config::aca_fqdn: fqdn.of.the.aca
@@ -85,7 +88,6 @@ Please refer to the inline documentation within each source file, or to the
 module's generated YARD documentation for reference material.
 
 ## Limitations
-
 
 SIMP Puppet modules are generally intended for use on Red Hat Enterprise Linux
 and compatible distributions, such as CentOS. Please see the
