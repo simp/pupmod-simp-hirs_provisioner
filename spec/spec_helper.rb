@@ -78,7 +78,7 @@ RSpec.configure do |c|
   }
 
   c.mock_framework = :rspec
-  c.mock_with :mocha
+  c.mock_with :rspec
 
   c.module_path = File.join(fixture_path, 'modules')
   c.manifest_dir = File.join(fixture_path, 'manifests')
@@ -110,6 +110,10 @@ RSpec.configure do |c|
     if defined?(environment)
       set_environment(environment)
     end
+
+    Puppet[:digest_algorithm] = 'sha256'
+    Puppet[:user] = Etc.getpwuid(Process.uid).name
+    Puppet[:group] = Etc.getgrgid(Process.gid).name
 
     if defined?(hieradata)
       set_hieradata(hieradata.gsub(':','_'))
