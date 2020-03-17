@@ -38,7 +38,7 @@ describe 'install tpm_simulators' do
   # start the tpm2sim and override tpm2-abrmd's systemd config use it
   # assumes the tpm2sim has been installed on the hosts
   def configure_tpm2_0_tools(hirs_host)
-    start_tpm2sim_on(hirs_host)
+    on hirs_host, 'systemctl start simp-tpm2-simulator.service'
     config_abrmd_for_tpm2sim_on(hirs_host)
   end
 
