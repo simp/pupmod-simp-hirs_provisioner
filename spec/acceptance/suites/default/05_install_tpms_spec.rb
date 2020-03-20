@@ -10,23 +10,24 @@ describe 'install tpm_simulators' do
     # "dbus[562]: [system] Unable to reload configuration: Configuration file
     #  needs one or more <listen> elements giving addresses"
     on hirs_host, 'systemctl restart dbus'
-  end
-
-  # starts tpm2sim service
-  def start_tpm2sim_on(hirs_host)
-    on hirs_host, 'yum install -y tpm2-tools'
-    on hirs_host, 'runuser tpm2sim --shell /bin/sh -c ' \
-      '"cd /tmp; nohup /usr/local/bin/tpm2-simulator &> /tmp/tpm2-simulator.log &"', \
-      pty: true, run_in_parallel: true
+    # The tpm simulator does not configure the socket to work with
+    # selinux
+    on hirs_host, 'setenforce 0'
   end
 
   def config_abrmd_for_tpm2sim_on(hirs_host)
+    tpm2_abrmd_version = on(hirs_host, 'tpm2-abrmd --version').stdout.split(/\s+/).last
+    if tpm2_abrmd_version.split('.').first.to_i > 1
+      tcti_info = '--tcti=/usr/lib64/libtss2-tcti-mssim.so.0'
+    else
+      tcti_info = '-t socket'
+    end
     on hirs_host, 'mkdir -p /etc/systemd/system/tpm2-abrmd.service.d'
     # Configure the TAB/RM to talk to the TPM2 simulator
     extra_file=<<-SYSTEMD.gsub(/^\s*/,'')
     [Service]
     ExecStart=
-    ExecStart=/sbin/tpm2-abrmd -t socket
+    ExecStart=/sbin/tpm2-abrmd  #{tcti_info}
     SYSTEMD
     create_remote_file hirs_host, '/etc/systemd/system/tpm2-abrmd.service.d/override.conf', extra_file
     on hirs_host, 'systemctl daemon-reload'
@@ -38,8 +39,10 @@ describe 'install tpm_simulators' do
   # start the tpm2sim and override tpm2-abrmd's systemd config use it
   # assumes the tpm2sim has been installed on the hosts
   def configure_tpm2_0_tools(hirs_host)
-    on hirs_host, 'systemctl start simp-tpm2-simulator.service'
+    install_package(hirs_host,'tpm2-abrmd')
+    install_package(hirs_host,'tpm2-tools')
     config_abrmd_for_tpm2sim_on(hirs_host)
+    on hirs_host, 'systemctl start tpm2-abrmd.service'
   end
 
   # This is a helper to get the status of the TPM so it can be compared against the
@@ -84,6 +87,7 @@ describe 'install tpm_simulators' do
     EOS
   }
 
+
   let(:hieradata) {
     <<-EOS
 ---
@@ -98,6 +102,7 @@ hirs_provisioner::config::aca_fqdn: aca
         if hirs_host.host_hash[:roles].include?('tpm_2_0')
           install_package(hirs_host,'simp-tpm2-simulator')
           implement_workarounds(hirs_host)
+          on hirs_host, 'systemctl start simp-tpm2-simulator.service'
           configure_tpm2_0_tools(hirs_host)
         else
           install_package(hirs_host,'simp-tpm12-simulator')
