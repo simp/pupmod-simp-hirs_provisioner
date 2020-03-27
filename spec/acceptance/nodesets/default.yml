@@ -28,6 +28,10 @@ HOSTS:
     box:        centos/7
     hypervisor: <%= hypervisor %>
     yum_repos:
+      simp_rolling:
+        baseurl: 'https://download.simp-project.com/simp/yum/rolling/6/el/$releasever/$basearch/simp/'
+        gpgcheck: 0
+
       epel:
         mirrorlist: 'https://mirrors.fedoraproject.org/metalink?repo=epel-7&arch=$basearch'
         gpgkeys:

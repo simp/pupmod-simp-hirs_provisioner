@@ -28,7 +28,7 @@ describe 'hirs_provisioner class with no tpm' do
           package_name = 'HIRS_Provisioner_TPM_1_2'
         end
         apply_manifest_on(hirs_host, manifest, :catch_failures => true)
-        check_for_package(hirs_host, package_name).should be false
+        expect( check_for_package(hirs_host, package_name) ).to be false
       end
 
       it 'should be idempotent' do

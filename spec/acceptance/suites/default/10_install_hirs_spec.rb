@@ -42,7 +42,7 @@ hirs_provisioner::config::aca_fqdn: aca
         end
         set_hieradata_on(hirs_host, hieradata)
         apply_manifest_on(hirs_host, manifest, :catch_failures => true)
-        check_for_package(hirs_host, package_name).should be true
+        expect( check_for_package(hirs_host, package_name)).to be true
       end
 
       it 'should be idempotent' do
