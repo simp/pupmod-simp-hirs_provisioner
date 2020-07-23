@@ -1,3 +1,6 @@
+* Thu Jul 20 2020 Jeanne Greulich <jeanne.greulich@onyxpoint.com> - 0.1.4-0
+- update the upper bound of simplib for SIMP 6.5 release
+
 * Mon Mar 02 2020 Jeanne Greulich<jeanne.greulich@onyxpoint.com> - 0.1.3
 - Updated tests to use tpm2 simulator package from download.simp-project.
 - HIRS tpm provisioner software does not run on EL8 yet.
