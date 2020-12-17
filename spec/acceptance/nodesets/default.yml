@@ -9,6 +9,7 @@ HOSTS:
   el7-tpm-1-2:
     roles:
       - default
+      # roles migrated from now-removed el6 node(s): 
       - hirs
       - tpm_1_2
     platform:   el-7-x86_64
@@ -34,19 +35,6 @@ HOSTS:
 
       epel:
         mirrorlist: 'https://mirrors.fedoraproject.org/metalink?repo=epel-7&arch=$basearch'
-        gpgkeys:
-          - https://dl.fedoraproject.org/pub/epel/RPM-GPG-KEY-EPEL-$releasever
-
-  el6-tpm-1-2:
-    roles:
-      - hirs
-      - tpm_1_2
-    platform:   el-6-x86_64
-    box:        centos/6
-    hypervisor: <%= hypervisor %>
-    yum_repos:
-      epel:
-        mirrorlist: 'https://mirrors.fedoraproject.org/metalink?repo=epel-6&arch=$basearch'
         gpgkeys:
           - https://dl.fedoraproject.org/pub/epel/RPM-GPG-KEY-EPEL-$releasever
 
