@@ -9,7 +9,6 @@ HOSTS:
   el7-tpm-1-2:
     roles:
       - default
-      # roles migrated from now-removed el6 node(s): 
       - hirs
       - tpm_1_2
     platform:   el-7-x86_64
