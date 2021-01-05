@@ -1,6 +1,6 @@
 {
   "name": "simp-hirs_provisioner",
-  "version": "0.1.4",
+  "version": "0.1.5",
   "author": "SIMP Team",
   "summary": "Implement Host Integrity at Runtime and Startup Provisioner",
   "license": "Apache-2.0",
@@ -24,21 +24,18 @@
     {
       "operatingsystem": "CentOS",
       "operatingsystemrelease": [
-        "6",
         "7"
       ]
     },
     {
       "operatingsystem": "RedHat",
       "operatingsystemrelease": [
-        "6",
         "7"
       ]
     },
     {
       "operatingsystem": "OracleLinux",
       "operatingsystemrelease": [
-        "6",
         "7"
       ]
     }
