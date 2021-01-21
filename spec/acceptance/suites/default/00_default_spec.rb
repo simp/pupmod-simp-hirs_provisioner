@@ -13,7 +13,8 @@ describe 'hirs_provisioner class with no tpm' do
   hosts.each do |host|
     it 'should enable SIMP dependencies repo' do
       # exclude SIMP repo, as we only want the SIMP deps repo
-      install_simp_repos(host, ['simp'])
+      # (...but maybe we need it now?)
+      install_simp_repos(host)
     end
   end
 
