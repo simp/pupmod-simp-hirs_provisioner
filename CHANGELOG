@@ -1,3 +1,9 @@
+* Tue Jun 08 2021 Trevor Vaughan <tvaughan@onyxpoint.com> - 0.1.5
+- Disabled the TPM 1.2 tests due to upstream ACA issues
+- Worked around a bug in the ACA for the tests
+- Added java installation to the module since it is a required dependency
+- Bumped the puppet and puppetlabs/stdlib supported versions
+
 * Thu Dec 17 2020 Chris Tessmer <chris.tessmer@onyxpoint.com> - 0.1.5
 - Removed EL6 support
 

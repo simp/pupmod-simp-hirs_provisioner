@@ -6,22 +6,9 @@
   end
 -%>
 HOSTS:
-  el7-tpm-1-2:
+  el7-tpm-2-0.beaker.test:
     roles:
       - default
-      - hirs
-      - tpm_1_2
-    platform:   el-7-x86_64
-    box:        centos/7
-    hypervisor: <%= hypervisor %>
-    yum_repos:
-      epel:
-        mirrorlist: 'https://mirrors.fedoraproject.org/metalink?repo=epel-7&arch=$basearch'
-        gpgkeys:
-          - https://dl.fedoraproject.org/pub/epel/RPM-GPG-KEY-EPEL-$releasever
-
-  el7-tpm-2-0:
-    roles:
       - hirs
       - tpm_2_0
     platform:   el-7-x86_64
@@ -32,22 +19,12 @@ HOSTS:
         baseurl: 'https://download.simp-project.com/simp/yum/rolling/6/el/$releasever/$basearch/simp/'
         gpgcheck: 0
 
-      epel:
-        mirrorlist: 'https://mirrors.fedoraproject.org/metalink?repo=epel-7&arch=$basearch'
-        gpgkeys:
-          - https://dl.fedoraproject.org/pub/epel/RPM-GPG-KEY-EPEL-$releasever
-
   aca:
     roles:
       - aca
     platform:   el-7-x86_64
     box:        centos/7
     hypervisor: <%= hypervisor %>
-    yum_repos:
-      epel:
-        mirrorlist: 'https://mirrors.fedoraproject.org/metalink?repo=epel-7&arch=$basearch'
-        gpgkeys:
-          - https://dl.fedoraproject.org/pub/epel/RPM-GPG-KEY-EPEL-$releasever
 
 CONFIG:
   log_level: verbose

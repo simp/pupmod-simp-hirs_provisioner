@@ -84,20 +84,18 @@ class hirs_provisioner::config (
       line  => "PORTAL_PORT=${portal_port}",
       match => '^PORTAL_PORT=.*$'
 
-  } ~>
+  } ~> Exec['hirs-provision-client']
 
   # provision hirs client
   if $::hirs_provisioner::tpm_version == '2.0' {
-    exec {
-      'hirs-provision-client':
-        command     => '/usr/sbin/hirs-provisioner-tpm2 provision',
-        refreshonly => true;
-    }
+    $_command = '/usr/sbin/hirs-provisioner-tpm2'
   } else {
-    exec {
-      'hirs-provision-client':
-        command     => '/usr/sbin/hirs-provisioner provision',
-        refreshonly => true;
-    }
+    $_command = '/usr/sbin/hirs-provisioner'
+  }
+
+  exec {
+    'hirs-provision-client':
+      command     => "$_command provision",
+      refreshonly => true
   }
 }

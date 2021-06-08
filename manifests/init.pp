@@ -45,11 +45,11 @@ class hirs_provisioner (
       notice('No TPM detected on $fqdn; skipping HIRS Provisioner installation')
     } else {
       $_tpm_enabled = true
-      include '::hirs_provisioner::install'
-      include '::hirs_provisioner::config'
+      include 'hirs_provisioner::install'
+      include 'hirs_provisioner::config'
 
-      Class[ '::hirs_provisioner::install' ]
-      -> Class[ '::hirs_provisioner::config' ]
+      Class[ 'hirs_provisioner::install' ]
+      -> Class[ 'hirs_provisioner::config' ]
     }
   }
 }

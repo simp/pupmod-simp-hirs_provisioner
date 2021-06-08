@@ -16,6 +16,31 @@ describe 'hirs_provisioner class with no tpm' do
       # (...but maybe we need it now?)
       install_simp_repos(host)
     end
+
+    it 'sets up dnsmasq' do
+      install_package(host, 'dnsmasq')
+
+      dnsmasq_conf = <<~DNSMASQ_CONF
+        listen-address=::1,127.0.0.1
+        expand-hosts
+        domain=beaker.test
+        server=8.8.8.8
+        server=4.4.4.4
+        DNSMASQ_CONF
+
+      create_remote_file(host, '/etc/dnsmasq.conf', dnsmasq_conf)
+
+      on(host, 'puppet resource service dnsmasq ensure=running enable=true')
+
+      resolv_conf = <<~RESOLV_CONF
+        nameserver 127.0.0.1
+        search beaker.test
+        RESOLV_CONF
+
+      create_remote_file(host, '/etc/resolv.conf', resolv_conf)
+
+      on(host, 'chattr +i /etc/resolv.conf')
+    end
   end
 
   hosts_with_role(hosts, 'hirs').each do |hirs_host|
