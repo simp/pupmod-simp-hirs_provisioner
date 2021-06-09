@@ -89,10 +89,10 @@ describe 'install tpm_simulators' do
 
 
   let(:hieradata) {
-    <<-EOS
----
-hirs_provisioner::config::aca_fqdn: aca
-    EOS
+    <<~EOS
+      ---
+      hirs_provisioner::config::aca_fqdn: aca.beaker.test
+      EOS
   }
 
   context 'on a hirs host' do

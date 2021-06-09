@@ -7,7 +7,9 @@ describe 'hirs_provisioner class' do
   #install an aca for the provisioners to talk to
   def setup_aca(aca)
     on aca, 'yum install -y mariadb-server openssl tomcat java-1.8.0 rpmdevtools coreutils initscripts chkconfig sed grep firewalld policycoreutils'
-    on aca, 'yum install -y HIRS_AttestationCA'
+    # Workaround for https://github.com/nsacyber/HIRS/issues/358
+    on aca, "sed -i 's/TLSv1, TLSv1.1, //' /usr/lib/jvm/java-*/jre/lib/security/java.security"
+    on aca, 'yum install -y https://github.com/nsacyber/HIRS/releases/download/V2.0.0/HIRS_AttestationCA-2.0.0-1607000235.0ce8d4.el7.noarch.rpm'
     sleep(10)
   end
 
@@ -18,10 +20,10 @@ describe 'hirs_provisioner class' do
   }
 
   let(:hieradata) {
-    <<-EOS
----
-hirs_provisioner::config::aca_fqdn: aca
-    EOS
+    <<~EOS
+      ---
+      hirs_provisioner::config::aca_fqdn: aca.beaker.test
+      EOS
   }
 
   context 'set up aca' do
@@ -48,7 +50,6 @@ hirs_provisioner::config::aca_fqdn: aca
       it 'should be idempotent' do
         apply_manifest_on(hirs_host, manifest, :catch_changes => true)
       end
-
     end
   end
 end
