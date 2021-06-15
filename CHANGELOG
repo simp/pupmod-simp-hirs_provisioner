@@ -1,3 +1,7 @@
+* Tue Jun 15 2021 Chris Tessmer <chris.tessmer@onyxpoint.com> - 0.2.0
+- Removed support for Puppet 5
+- Ensured support for Puppet 7 in requirements and stdlib
+
 * Tue Jun 08 2021 Trevor Vaughan <tvaughan@onyxpoint.com> - 0.1.5
 - Disabled the TPM 1.2 tests due to upstream ACA issues
 - Worked around a bug in the ACA for the tests
