@@ -26,9 +26,9 @@ class hirs_provisioner::config (
     'hirs-provision-config':
       command => '/usr/sbin/hirs-provisioner -c',
       onlyif  => '/usr/bin/test ! -f /etc/hirs/hirs-site.config'
-  } ->
+  }
 
-  file_line {
+  -> file_line {
 
     # set CLIENT_HOSTNAME
     'client-hostname':
@@ -95,7 +95,7 @@ class hirs_provisioner::config (
 
   exec {
     'hirs-provision-client':
-      command     => "$_command provision",
+      command     => "${_command} provision",
       refreshonly => true
   }
 }
