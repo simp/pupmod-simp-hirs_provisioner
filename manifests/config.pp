@@ -37,10 +37,12 @@ class hirs_provisioner::config (
       match => '^CLIENT_HOSTNAME=.*$';
 
     # set TPM_ENABLED
+    # lint:ignore:variable_scope
     'tpm-enabled':
       path  => '/etc/hirs/hirs-site.config',
       line  => "TPM_ENABLED=${hirs_provisioner::_tpm_enabled}",
       match => '^TPM_ENABLED=.*$';
+    # lint:endignore
 
     # set IMA_ENABLED
     'ima-enabled':
