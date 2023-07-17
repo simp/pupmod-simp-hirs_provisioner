@@ -26,9 +26,9 @@ class hirs_provisioner::config (
     'hirs-provision-config':
       command => '/usr/sbin/hirs-provisioner -c',
       onlyif  => '/usr/bin/test ! -f /etc/hirs/hirs-site.config'
-  } ->
+  }
 
-  file_line {
+  -> file_line {
 
     # set CLIENT_HOSTNAME
     'client-hostname':
@@ -37,10 +37,12 @@ class hirs_provisioner::config (
       match => '^CLIENT_HOSTNAME=.*$';
 
     # set TPM_ENABLED
+    # lint:ignore:variable_scope
     'tpm-enabled':
       path  => '/etc/hirs/hirs-site.config',
       line  => "TPM_ENABLED=${hirs_provisioner::_tpm_enabled}",
       match => '^TPM_ENABLED=.*$';
+    # lint:endignore
 
     # set IMA_ENABLED
     'ima-enabled':
@@ -95,7 +97,7 @@ class hirs_provisioner::config (
 
   exec {
     'hirs-provision-client':
-      command     => "$_command provision",
+      command     => "${_command} provision",
       refreshonly => true
   }
 }
