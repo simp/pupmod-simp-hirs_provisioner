@@ -3,15 +3,14 @@ require 'spec_helper_acceptance'
 test_name 'hirs_provisioner class with no tpm'
 
 describe 'hirs_provisioner class with no tpm' do
-
-  let(:manifest) {
+  let(:manifest) do
     <<-EOS
       include 'hirs_provisioner'
     EOS
-  }
+  end
 
   hosts.each do |host|
-    it 'should enable SIMP dependencies repo' do
+    it 'enables SIMP dependencies repo' do
       # exclude SIMP repo, as we only want the SIMP deps repo
       # (...but maybe we need it now?)
       install_simp_repos(host)
@@ -47,18 +46,19 @@ describe 'hirs_provisioner class with no tpm' do
     # This tests that nothing bad happens when the module is applied with no TPM
     context 'default parameters' do
       # Using puppet_apply as a helper
-      it 'should work with no errors' do
+      it 'works with no errors' do
         if hirs_host.host_hash[:roles].include?('tpm_2_0')
           package_name = 'HIRS_Provisioner_TPM_2_0'
-        else hirs_host.host_hash[:roles].include?('tpm_1_2')
+        else
+          hirs_host.host_hash[:roles].include?('tpm_1_2')
           package_name = 'HIRS_Provisioner_TPM_1_2'
         end
-        apply_manifest_on(hirs_host, manifest, :catch_failures => true)
-        expect( check_for_package(hirs_host, package_name) ).to be false
+        apply_manifest_on(hirs_host, manifest, catch_failures: true)
+        expect(check_for_package(hirs_host, package_name)).to be false
       end
 
-      it 'should be idempotent' do
-        apply_manifest_on(hirs_host, manifest, :catch_changes => true)
+      it 'is idempotent' do
+        apply_manifest_on(hirs_host, manifest, catch_changes: true)
       end
     end
   end

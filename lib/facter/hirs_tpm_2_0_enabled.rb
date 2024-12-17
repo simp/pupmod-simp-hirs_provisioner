@@ -1,6 +1,6 @@
 # create "hirs_tpm_2_0_enabled" custom puppet fact
-Facter.add("hirs_tpm_2_0_enabled") do
-  confine :kernel => 'Linux'
+Facter.add('hirs_tpm_2_0_enabled') do
+  confine kernel: 'Linux'
   confine { Facter::Core::Execution.which('tpm2_getcap') }
   setcode do
     # check whether tpm is enabled
@@ -8,4 +8,3 @@ Facter.add("hirs_tpm_2_0_enabled") do
     tpm_2_0_fixed_params.include? '"2.0"'
   end
 end
-
