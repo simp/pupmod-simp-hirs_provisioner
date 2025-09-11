@@ -13,7 +13,7 @@ describe 'hirs_provisioner class' do
   end
 
   let(:manifest) do
-    <<-EOS
+    <<~EOS
       include 'hirs_provisioner'
     EOS
   end
@@ -22,7 +22,7 @@ describe 'hirs_provisioner class' do
     <<~EOS
       ---
       hirs_provisioner::config::aca_fqdn: aca.beaker.test
-      EOS
+    EOS
   end
 
   context 'set up aca' do

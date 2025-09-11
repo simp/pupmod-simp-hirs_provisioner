@@ -18,10 +18,10 @@ describe 'hirs_provisioner' do
 
         context 'with default parameters' do
           let(:facts) do
-            os_facts.merge({
-                             hirs_tpm_1_2_enabled: false,
-              hirs_tpm_2_0_enabled:  false,
-                           })
+            os_facts.merge(
+              hirs_tpm_1_2_enabled: false,
+              hirs_tpm_2_0_enabled: false,
+            )
           end
 
           it { is_expected.to compile.with_all_deps }
@@ -33,10 +33,10 @@ describe 'hirs_provisioner' do
 
         context 'with default parameters and TPM 1.2 detected' do
           let(:facts) do
-            os_facts.merge({
-                             hirs_tpm_1_2_enabled: true,
-              hirs_tpm_2_0_enabled:  false,
-                           })
+            os_facts.merge(
+              hirs_tpm_1_2_enabled: true,
+              hirs_tpm_2_0_enabled: false,
+            )
           end
 
           it_behaves_like 'a structured module'
@@ -44,10 +44,10 @@ describe 'hirs_provisioner' do
 
         context 'with default parameters and TPM 2 detected' do
           let(:facts) do
-            os_facts.merge({
-                             hirs_tpm_1_2_enabled: false,
-              hirs_tpm_2_0_enabled:  true,
-                           })
+            os_facts.merge(
+              hirs_tpm_1_2_enabled: false,
+              hirs_tpm_2_0_enabled: true,
+            )
           end
 
           it_behaves_like 'a structured module'

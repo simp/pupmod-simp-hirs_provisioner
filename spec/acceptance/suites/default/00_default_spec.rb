@@ -4,7 +4,7 @@ test_name 'hirs_provisioner class with no tpm'
 
 describe 'hirs_provisioner class with no tpm' do
   let(:manifest) do
-    <<-EOS
+    <<~EOS
       include 'hirs_provisioner'
     EOS
   end
@@ -25,7 +25,7 @@ describe 'hirs_provisioner class with no tpm' do
         domain=beaker.test
         server=8.8.8.8
         server=4.4.4.4
-        DNSMASQ_CONF
+      DNSMASQ_CONF
 
       create_remote_file(host, '/etc/dnsmasq.conf', dnsmasq_conf)
 
@@ -34,7 +34,7 @@ describe 'hirs_provisioner class with no tpm' do
       resolv_conf = <<~RESOLV_CONF
         nameserver 127.0.0.1
         search beaker.test
-        RESOLV_CONF
+      RESOLV_CONF
 
       create_remote_file(host, '/etc/resolv.conf', resolv_conf)
 

@@ -10,10 +10,10 @@ describe 'hirs_provisioner::install' do
 
         context 'with default parameters and TPM 1.2 detected' do
           let(:facts) do
-            os_facts.merge({
-                             hirs_tpm_1_2_enabled: true,
-              hirs_tpm_2_0_enabled:  false,
-                           })
+            os_facts.merge(
+              hirs_tpm_1_2_enabled: true,
+              hirs_tpm_2_0_enabled: false,
+            )
           end
           let(:pre_condition) { 'include hirs_provisioner' }
 
@@ -23,10 +23,10 @@ describe 'hirs_provisioner::install' do
 
         context 'with default parameters and TPM 2 detected' do
           let(:facts) do
-            os_facts.merge({
-                             hirs_tpm_1_2_enabled: false,
-              hirs_tpm_2_0_enabled:  true,
-                           })
+            os_facts.merge(
+              hirs_tpm_1_2_enabled: false,
+              hirs_tpm_2_0_enabled: true,
+            )
           end
           let(:pre_condition) { 'include hirs_provisioner' }
 

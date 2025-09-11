@@ -23,10 +23,10 @@ describe 'install tpm_simulators' do
                 end
     on hirs_host, 'mkdir -p /etc/systemd/system/tpm2-abrmd.service.d'
     # Configure the TAB/RM to talk to the TPM2 simulator
-    extra_file = <<-SYSTEMD.gsub(%r{^\s*}, '')
-    [Service]
-    ExecStart=
-    ExecStart=/sbin/tpm2-abrmd  #{tcti_info}
+    extra_file = <<~SYSTEMD
+      [Service]
+      ExecStart=
+      ExecStart=/sbin/tpm2-abrmd  #{tcti_info}
     SYSTEMD
     create_remote_file hirs_host, '/etc/systemd/system/tpm2-abrmd.service.d/override.conf', extra_file
     on hirs_host, 'systemctl daemon-reload'
@@ -82,7 +82,7 @@ describe 'install tpm_simulators' do
   end
 
   let(:manifest) do
-    <<-EOS
+    <<~EOS
       include 'hirs_provisioner'
     EOS
   end
@@ -91,7 +91,7 @@ describe 'install tpm_simulators' do
     <<~EOS
       ---
       hirs_provisioner::config::aca_fqdn: aca.beaker.test
-      EOS
+    EOS
   end
 
   context 'on a hirs host' do
