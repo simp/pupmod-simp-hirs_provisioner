@@ -20,7 +20,7 @@ describe 'hirs_provisioner' do
           let(:facts) do
             os_facts.merge({
                              hirs_tpm_1_2_enabled: false,
-              hirs_tpm_2_0_enabled:  false
+              hirs_tpm_2_0_enabled:  false,
                            })
           end
 
@@ -35,7 +35,7 @@ describe 'hirs_provisioner' do
           let(:facts) do
             os_facts.merge({
                              hirs_tpm_1_2_enabled: true,
-              hirs_tpm_2_0_enabled:  false
+              hirs_tpm_2_0_enabled:  false,
                            })
           end
 
@@ -46,7 +46,7 @@ describe 'hirs_provisioner' do
           let(:facts) do
             os_facts.merge({
                              hirs_tpm_1_2_enabled: false,
-              hirs_tpm_2_0_enabled:  true
+              hirs_tpm_2_0_enabled:  true,
                            })
           end
 
